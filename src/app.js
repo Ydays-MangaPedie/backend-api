@@ -13,10 +13,11 @@ app.use(errorHandler);
 
 
 const con = mysql.createConnection({
-  host: "145.239.70.179",
-  user: "user",
-  password: "zWi27j?47",
-  database: "mangapedieDB",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
 });
 
 con.connect(function (err) {
