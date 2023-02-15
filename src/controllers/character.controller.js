@@ -7,7 +7,6 @@ exports.getCharactersByMangaID = async (req, res, next) => {
       `WHERE idmanga = ${req.query.idmanga}`,
       req.query.page
     );
-
     res.json(result);
   } catch (err) {
     next(new Error(`Error while getting characters \n ${err.message}`));
