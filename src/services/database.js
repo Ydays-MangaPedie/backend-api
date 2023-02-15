@@ -1,27 +1,43 @@
-const mysql = require("mysql2/promise");
+const mysqlssh = require("mysql2-ssh");
 const helpers = require("../helpers/");
 const config = require("./config");
 
-exports.query = async (sql, params) => {
-  try {
-    const connection = await mysql.createConnection(config.db);
-    const [results] = await connection.execute(sql, params);
-    return results;
-  } catch (error) {
-    return error;
-  }
+exports.queryToDatabase = async (sql) => {
+  mysqlssh.connect(config.ssh, config.db).then((client) => {
+    client.query(sql, function (err, results, fields) {
+      if (err) throw err;
+      mysqlssh.close();
+      return {results, error: err };
+    });
+  })
+  .catch((error) => {
+    return { results: [], error };
+  });
 };
 
 exports.getMultiple = async (table, condition, page = 1) => {
-  const offset = helpers.getOffset(page, config.listPerPage);
-  const rows = await query(
-    `SELECT * FROM ${table} LIMIT ${offset},${config.listPerPage} ${condition}`
-  );
-  const data = helpers.emptyOrRows(rows);
-  const meta = { page };
+  try {
+    const offset = helpers.getOffset(page, config.listPerPage);
+    const { results, error } = await this.queryToDatabase(
+      `SELECT * FROM \`${table}\` LIMIT ${offset},${config.listPerPage} ${condition}`
+    );
+    if (error) {
+      return { data: null, meta: null, error };
+    }
 
-  return {
-    data,
-    meta,
-  };
+    const data = helpers.emptyOrRows(results);
+    const meta = { page };
+
+    return {
+      data,
+      meta,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      meta: null,
+      error,
+    };
+  }
 };
