@@ -4,9 +4,8 @@ const config = require("./config");
 
 exports.queryToDatabase = async (sql) => {
   try {
-    await mysqlssh.connect(config.ssh, config.db);
-    const connection = mysqlssh._sql;
-    const [results,] = await connection.promise().execute(sql);
+    const connection = await mysqlssh.connect(config.ssh, config.db);
+    const [results,] = await connection.execute(sql);
     mysqlssh.close();
     return results
   } catch (error) {
@@ -20,7 +19,7 @@ exports.getMultiple = async (table, condition, page = 1) => {
     const results = await this.queryToDatabase(
       `SELECT * FROM ${table} ${condition} LIMIT ${offset},${config.listPerPage}`
     );
-
+console.log(results);
     const data = helpers.emptyOrRows(results);
     const meta = { page };
 
