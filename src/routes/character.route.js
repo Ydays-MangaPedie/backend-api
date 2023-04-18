@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const characterController = require('../controllers/character.controller');
+const characterController = require("../controllers/character.controller");
 
 router.get("/", characterController.getCharactersByMangaID);
 
