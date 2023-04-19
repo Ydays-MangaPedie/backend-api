@@ -15,9 +15,8 @@ exports.queryToDatabase = async (sql) => {
 
 exports.getMultiple = async (table, condition, page = 1) => {
   try {
-    const offset = helpers.getOffset(page, config.listPerPage);
     const results = await this.queryToDatabase(
-      `SELECT * FROM ${table} ${condition} LIMIT ${offset},${config.listPerPage}`
+      `SELECT * FROM ${table} ${condition} `
     );
     console.log(results);
     const data = helpers.emptyOrRows(results);

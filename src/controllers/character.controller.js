@@ -3,9 +3,8 @@ const { getMultiple } = require("../services/database");
 exports.getCharactersByMangaID = async (req, res, next) => {
   try {
     const result = await getMultiple(
-      "personnage",
-      `WHERE idmanga = ${req.query.idmanga}`,
-      req.query.page
+      "personnages",
+      `WHERE id_manga = ${req.query.id_manga}`
     );
     res.json(result);
   } catch (err) {
